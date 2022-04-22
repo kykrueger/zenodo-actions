@@ -1,18 +1,22 @@
-name: 'Zenodo New Version'
+name: 'Zenodo Publish'
 
-description: 'Creates a new version of the provided Zenodo Deposition'
+description: 'Publishes a new version of the provided Zenodo Deposition'
 
 on: [push]
 
 inputs:
   zenodo_deposition:
-    description: 'The ID of the Zenodo Deposition to create a new version of.'
+    description: 'The ID of the Zenodo Deposition to publish to.'
     required: true
   zenodo_token:
     description: 'The Auth Token for Zenodo'
     required: true
-  whitelist_replace_doi:
-    description: 'The file with a filename per line in which the doi should be replaced'
+  zenodo_metadata:
+    description: 'The Json file containing metadata for your deposition'
+    required: false
+    default: '.zenodo.json'
+  whitelist_uploads:
+    description: 'The file with a filename per line that should be uploaded to the deposition'
     required: false
     default: '.whitelist_upload'
   zenodo_server:
@@ -21,7 +25,7 @@ inputs:
     default: 'https://sandbox.zenodo.org'
 
 jobs:
-  zenodo-new-version:
+  zenodo-publish:
 
     runs-on: ubuntu-latest
 
@@ -34,22 +38,21 @@ jobs:
       - name: Install zenodo-rest
         run: |
           python -m pip install --upgrade pip
-          pip install zenodo-rest==0.0.0b2
+          pip install zenodo-rest=0.0.0b2
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Fetch Latest Deposition
         run: |
           zenodo-rest depositions retrieve ${{ input.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
-      - name: Create new version 
+      - name: Update metadata
         run: |
-          # Create new version
-          zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
-      - if: [-f tmp/.zenodo_deposition.json] && [-f .whitelist_replace_doi]
-        name: Replace DOIs
+          zenodo-rest depositions update ${{ input.zenodo_deposition_id }} ${{ input.zenodo_metadata }}
+      - if: [ -f .whitelist_upload ]
+        name: Upload attachments 
         run: |
           # Replace DOI in whiteliste files
           LATEST_DOI=$(zenodo-rest depositions doi latest tmp/.zenodo_deposition.json)
-          LATEST_DRAFT_DOI=$(zenodo-rest depositions doi latest-draft tmp/.zenodo_deposition.json)
-          xargs -a .whitelist_replace_doi -I {} sed -i -e "s/$LATEST_DOI/$LATEST_DRAFT_DOI/g" {}
+          LATEST_DRAFT_DOI=$(zenodo-rest depositions doi latest-draft .zenodo_deposition.json)
+          xargs -a .whitelist_upload -I {} zenodo-rest depositions upload-file tmp/.zenodo_deposition.json {}
       - if: test -f tmp/.zenodo_deposition.json
         name: Cleanup 
         run: rm tmp/.zenodo_deposition.json
