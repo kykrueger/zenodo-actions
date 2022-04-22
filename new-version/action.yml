@@ -44,6 +44,7 @@ runs:
         ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         # Create new version
+        cat .tmp_zenodo_deposition.json
         zenodo-rest depositions new-version .tmp_zenodo_deposition.json > .tmp_zenodo_deposition.json
     - name: Replace DOIs
       shell: bash
