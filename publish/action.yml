@@ -1,15 +1,8 @@
 name: 'Zenodo Publish'
-
 description: 'Publishes a new version of the provided Zenodo Deposition'
-
-on: [push]
-
 inputs:
   zenodo_deposition:
     description: 'The ID of the Zenodo Deposition to publish to.'
-    required: true
-  zenodo_token:
-    description: 'The Auth Token for Zenodo'
     required: true
   zenodo_metadata:
     description: 'The Json file containing metadata for your deposition'
@@ -23,36 +16,51 @@ inputs:
     description: 'The URL of the Zenodo Server to use, set "https://zenodo.org" for production'
     required: false
     default: 'https://sandbox.zenodo.org'
-
-jobs:
-  zenodo-publish:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.9
-      - name: Install zenodo-rest
-        run: |
-          python -m pip install --upgrade pip
-          pip install zenodo-rest=0.0.0b2
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Fetch Latest Deposition
-        run: |
-          zenodo-rest depositions retrieve ${{ input.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
-      - name: Update metadata
-        run: |
-          zenodo-rest depositions update ${{ input.zenodo_deposition_id }} ${{ input.zenodo_metadata }}
-      - if: [ -f .whitelist_upload ]
-        name: Upload attachments 
-        run: |
-          # Replace DOI in whiteliste files
-          LATEST_DOI=$(zenodo-rest depositions doi latest tmp/.zenodo_deposition.json)
-          LATEST_DRAFT_DOI=$(zenodo-rest depositions doi latest-draft .zenodo_deposition.json)
-          xargs -a .whitelist_upload -I {} zenodo-rest depositions upload-file tmp/.zenodo_deposition.json {}
-      - if: test -f tmp/.zenodo_deposition.json
-        name: Cleanup 
-        run: rm tmp/.zenodo_deposition.json
+secrets:
+  zenodo_token:
+    description: 'The Auth Token for Zenodo'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+    - name: Install zenodo-rest
+      env:
+        ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        ZENODO_URL: ${{ input.zenodo_server }}
+      run: |
+        python -m pip install --upgrade pip
+        pip install zenodo-rest=0.0.0b2
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Fetch Latest Deposition
+      env:
+        ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        ZENODO_URL: ${{ input.zenodo_server }}
+      run: |
+        zenodo-rest depositions retrieve ${{ input.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
+    - name: Update metadata
+      env:
+        ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        ZENODO_URL: ${{ input.zenodo_server }}
+      run: |
+        zenodo-rest depositions update tmp/.zenodo_deposition.json ${{ input.zenodo_metadata }}
+    - if: [ -f .whitelist_upload ]
+      name: Upload attachments 
+      env:
+        ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        ZENODO_URL: ${{ input.zenodo_server }}
+      run: |
+        LATEST_DOI=$(zenodo-rest depositions doi latest tmp/.zenodo_deposition.json)
+        LATEST_DRAFT_DOI=$(zenodo-rest depositions doi latest-draft .zenodo_deposition.json)
+        xargs -a .whitelist_upload -I {} zenodo-rest depositions upload-file tmp/.zenodo_deposition.json {}
+    - name: Publish updated deposition
+      env:
+        ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        ZENODO_URL: ${{ input.zenodo_server }}
+      run: zenodo-rest depositions publish tmp/.zenodo_deposition.json
+    - if: test -f tmp/.zenodo_deposition.json
+      name: Cleanup 
+      run: rm tmp/.zenodo_deposition.json
