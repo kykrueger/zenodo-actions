@@ -15,6 +15,9 @@ inputs:
   zenodo_token:
     description: 'The Auth Token for Zenodo'
     required: true
+env:
+  ZENODO_TOKEN: ${{ input.ZENODO_TOKEN }}
+  ZENODO_URL: ${{ input.zenodo_server }}
 runs:
   using: "composite"
   steps:
@@ -30,9 +33,6 @@ runs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Fetch Latest Deposition
       shell: bash
-      env:
-        ZENODO_TOKEN: ${{ input.ZENODO_TOKEN }}
-        ZENODO_URL: ${{ input.zenodo_server }}
       run: |
         zenodo-rest depositions retrieve ${{ input.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
     - name: Create new version 
