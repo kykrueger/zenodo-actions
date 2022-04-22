@@ -18,10 +18,8 @@ jobs:
       - uses: ./new-version/action.yml
         with:
           zenodo_deposition: 1054411
-        secrets:
           zenodo_token: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
       - uses: ./publish/action.yml
         with:
           zenodo_deposition: 1054411
-        secrets:
           zenodo_token: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
