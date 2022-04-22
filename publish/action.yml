@@ -1,7 +1,7 @@
 name: 'Zenodo Publish'
 description: 'Publishes a new version of the provided Zenodo Deposition'
 inputs:
-  zenodo_deposition:
+  zenodo_deposition_id:
     description: 'The ID of the Zenodo Deposition to publish to.'
     required: true
   zenodo_metadata:

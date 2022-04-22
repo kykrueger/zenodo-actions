@@ -1,7 +1,7 @@
 name: 'Zenodo New Version'
 description: 'Creates a new version of the provided Zenodo Deposition'
 inputs:
-  zenodo_deposition:
+  zenodo_deposition_id:
     description: 'The ID of the Zenodo Deposition to create a new version of.'
     required: true
   whitelist_replace_doi:
@@ -41,7 +41,7 @@ runs:
       run: |
         # Create new version
         zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
-    - if: [-f tmp/.zenodo_deposition.json] && [-f .whitelist_replace_doi]
+    - if: [-f .whitelist_replace_doi]
       name: Replace DOIs
       run: |
         # Replace DOI in whiteliste files
