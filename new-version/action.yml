@@ -16,7 +16,7 @@ inputs:
     description: 'The Auth Token for Zenodo'
     required: true
 env:
- TMP_DEPOSITION_JSON: "tmp/.zenodo_deposition.json"
+ TMP_DEPOSITION_JSON: ".tmp_zenodo_deposition.json"
 runs:
   using: "composite"
   steps:
