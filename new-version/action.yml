@@ -43,18 +43,23 @@ runs:
       run: |
         # Create new version
         zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
-    - if: test -f .whitelist_replace_doi
-      name: Replace DOIs
+    - name: Replace DOIs
       shell: bash
       env:
         ZENODO_TOKEN: ${{ inputs.zenodo_token }}
         ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
+        if test ! -f .whitelist_replace_doi; then exit; fi
         # Replace DOI in whiteliste files
         LATEST_DOI=$(zenodo-rest depositions doi latest tmp/.zenodo_deposition.json)
         LATEST_DRAFT_DOI=$(zenodo-rest depositions doi latest-draft tmp/.zenodo_deposition.json)
         xargs -a .whitelist_replace_doi -I {} sed -i -e "s/$LATEST_DOI/$LATEST_DRAFT_DOI/g" {}
-    - if: test -f tmp/.zenodo_deposition.json
-      name: Cleanup 
+    - name: Cleanup 
       shell: bash
-      run: rm tmp/.zenodo_deposition.json
+      run: |
+        if test ! -f tmp/.zenodo_deposition.json
+        then
+          echo "Nothing to cleanup, exiting early"
+          exit
+         fi
+        rm tmp/.zenodo_deposition.json
