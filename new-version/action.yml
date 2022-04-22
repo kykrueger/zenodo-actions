@@ -16,8 +16,8 @@ inputs:
     description: 'The Auth Token for Zenodo'
     required: true
 env:
-  ZENODO_TOKEN: ${{ input.ZENODO_TOKEN }}
-  ZENODO_URL: ${{ input.zenodo_server }}
+  ZENODO_TOKEN: ${{ inputs.ZENODO_TOKEN }}
+  ZENODO_URL: ${{ inputs.zenodo_server }}
 runs:
   using: "composite"
   steps:
@@ -34,12 +34,12 @@ runs:
     - name: Fetch Latest Deposition
       shell: bash
       run: |
-        zenodo-rest depositions retrieve ${{ input.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
+        zenodo-rest depositions retrieve ${{ inputs.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
     - name: Create new version 
       shell: bash
       env:
-        ZENODO_TOKEN: ${{ input.ZENODO_TOKEN }}
-        ZENODO_URL: ${{ input.zenodo_server }}
+        ZENODO_TOKEN: ${{ inputs.ZENODO_TOKEN }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         # Create new version
         zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
