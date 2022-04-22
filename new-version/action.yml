@@ -28,20 +28,33 @@ runs:
         python -m pip install --upgrade pip
         pip install zenodo-rest==0.0.0b2
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Create new version 
+    - name: Fetch Latest Deposition
       shell: bash
+      env:
+        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         mkdir tmp
         zenodo-rest depositions retrieve ${{ inputs.zenodo_deposition_id }} > tmp/.zenodo_deposition.json
+    - name: Create new version 
+      shell: bash
+      env:
+        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
+      run: |
+        # Create new version
         zenodo-rest depositions new-version tmp/.zenodo_depostiion.json > tmp/.zenodo_deposition.json
+    - name: Replace DOIs
+      shell: bash
+      env:
+        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
+      run: |
         if test ! -f .whitelist_replace_doi; then exit; fi
         # Replace DOI in whiteliste files
         LATEST_DOI=$(zenodo-rest depositions doi latest tmp/.zenodo_deposition.json)
         LATEST_DRAFT_DOI=$(zenodo-rest depositions doi latest-draft tmp/.zenodo_deposition.json)
         xargs -a .whitelist_replace_doi -I {} sed -i -e "s/$LATEST_DOI/$LATEST_DRAFT_DOI/g" {}
-      env:
-        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
-        ZENODO_URL: ${{ inputs.zenodo_server }}
     - name: Cleanup 
       shell: bash
       run: |
