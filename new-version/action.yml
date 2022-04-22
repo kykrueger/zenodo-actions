@@ -15,11 +15,11 @@ inputs:
   zenodo_token:
     description: 'The Auth Token for Zenodo'
     required: true
-env:
-  ZENODO_TOKEN: ${{ inputs.ZENODO_TOKEN }}
-  ZENODO_URL: ${{ inputs.zenodo_server }}
 runs:
   using: "composite"
+  env:
+    ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+    ZENODO_URL: ${{ inputs.zenodo_server }}
   steps:
     - name: Set up Python
       uses: actions/setup-python@v3
@@ -37,9 +37,6 @@ runs:
         zenodo-rest depositions retrieve ${{ inputs.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
     - name: Create new version 
       shell: bash
-      env:
-        ZENODO_TOKEN: ${{ inputs.ZENODO_TOKEN }}
-        ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         # Create new version
         zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
