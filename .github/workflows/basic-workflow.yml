@@ -32,11 +32,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./new-version/action.yml
+      - uses: ./new-version
         with:
           zenodo_deposition_id: ${{ github.event.inputs.zenodo_deposition_id }}
           zenodo_token: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
-      - uses: ./publish/action.yml
+      - uses: ./publish
         with:
           zenodo_deposition_id: ${{ github.event.inputs.zenodo_deposition_id }}
           zenodo_token: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
