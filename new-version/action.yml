@@ -17,9 +17,6 @@ inputs:
     required: true
 runs:
   using: "composite"
-  env:
-    ZENODO_TOKEN: ${{ inputs.zenodo_token }}
-    ZENODO_URL: ${{ inputs.zenodo_server }}
   steps:
     - name: Set up Python
       uses: actions/setup-python@v3
@@ -33,16 +30,25 @@ runs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Fetch Latest Deposition
       shell: bash
+      env:
+        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         zenodo-rest depositions retrieve ${{ inputs.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
     - name: Create new version 
       shell: bash
+      env:
+        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         # Create new version
         zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
     - if: [-f .whitelist_replace_doi]
       name: Replace DOIs
       shell: bash
+      env:
+        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         # Replace DOI in whiteliste files
         LATEST_DOI=$(zenodo-rest depositions doi latest tmp/.zenodo_deposition.json)
