@@ -1,0 +1,26 @@
+name: Zenodo Update
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - name: Install zenodo-rest
+        run: |
+          python -m pip install --upgrade pip
+          pip install zenodo-rest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Create new version 
+        run: |
+          # Create new version
+      - name: Test with pytest
+        run: |
+          pytest
