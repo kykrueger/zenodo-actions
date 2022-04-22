@@ -34,7 +34,7 @@ runs:
         ZENODO_TOKEN: ${{ inputs.zenodo_token }}
         ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
-        zenodo-rest depositions retrieve ${{ inputs.zenodo_deposition_id }} --dest tmp/.zenodo_deposition.json
+        zenodo-rest depositions retrieve ${{ inputs.zenodo_deposition_id }} > tmp/.zenodo_deposition.json
     - name: Create new version 
       shell: bash
       env:
@@ -42,7 +42,7 @@ runs:
         ZENODO_URL: ${{ inputs.zenodo_server }}
       run: |
         # Create new version
-        zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
+        zenodo-rest depositions new-version tmp/.zenodo_depostiion.json > tmp/.zenodo_deposition.json
     - name: Replace DOIs
       shell: bash
       env:
