@@ -43,7 +43,7 @@ runs:
       run: |
         # Create new version
         zenodo-rest depositions new-version tmp/.zenodo_depostiion.json --dest tmp/.zenodo_deposition.json
-    - if: [-f .whitelist_replace_doi]
+    - if: test -f .whitelist_replace_doi
       name: Replace DOIs
       shell: bash
       env:
