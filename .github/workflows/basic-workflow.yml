@@ -7,25 +7,10 @@ on:
       - '**.txt'
       - '**.md'
       - '**.csv'
-    inputs:
-      zenodo_deposition_id:
-        description: 'The ID of the Zenodo Deposition to create a new version of.'
-        required: true
-        default: 1054411
-      zenodo_server:
-        description: 'The URL of the Zenodo Server to use, set "https://zenodo.org" for production'
-        required: false
-        default: 'https://sandbox.zenodo.org'
   workflow_dispatch:
-    inputs:
-      zenodo_deposition_id:
-        description: 'The ID of the Zenodo Deposition to create a new version of.'
-        required: true
-        default: 1054411
-      zenodo_server:
-        description: 'The URL of the Zenodo Server to use, set "https://zenodo.org" for production'
-        required: false
-        default: 'https://sandbox.zenodo.org'
+env:
+  zenodo_deposition_id: 1054411
+  zenodo_server: 'https://sandbox.zenodo.org'
 jobs:
   new_version:
     name: Create new version of zenodo deposition
@@ -34,9 +19,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./new-version
         with:
-          zenodo_deposition_id: ${{ github.event.inputs.zenodo_deposition_id }}
+          zenodo_deposition_id: ${{ env.zenodo_deposition_id }}
+          zenodo_server: ${{ env.zenodo_server }}
           zenodo_token: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
       - uses: ./publish
         with:
-          zenodo_deposition_id: ${{ github.event.inputs.zenodo_deposition_id }}
+          zenodo_deposition_id: ${{ env.zenodo_deposition_id }}
+          zenodo_server: ${{ env.zenodo_server }}
           zenodo_token: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
