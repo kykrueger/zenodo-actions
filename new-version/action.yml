@@ -57,8 +57,7 @@ runs:
         LATEST_DOI=$(zenodo-rest depositions doi latest .tmp_zenodo_deposition.json)
         LATEST_DRAFT_DOI=$(zenodo-rest depositions doi latest-draft .tmp_zenodo_deposition.json)
         xargs -a .whitelist_replace_doi -I {}\
-          awk -v t="$LATEST_DOI" -v r="$LATEST_DRAFT_DOI"\
-          '{while(i=index($0,t)){$0 = substr($0,1,i-1) r substr($0,i+length(t))} print}' {}
+          awk -i inplace-v t="$LATEST_DOI" -v r="$LATEST_DRAFT_DOI" "{gsub(t,r);}1" {}
     - name: Cleanup 
       shell: bash
       run: |
