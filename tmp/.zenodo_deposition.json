@@ -1,0 +1,68 @@
+{
+    "created": "2022-04-22T13:37:19.375951+00:00",
+    "doi": "10.5072/zenodo.1054411",
+    "doi_url": "https://doi.org/10.5072/zenodo.1054411",
+    "files": [
+        {
+            "id": "a5a06ef4-9343-4be9-a609-addfe5f980ec",
+            "filename": "test.json",
+            "filesize": "1572",
+            "checksum": "39486e1a3fd1eaf2ce4465ec77fa620e",
+            "links": {
+                "download": "https://sandbox.zenodo.org/api/files/4d962396-3207-4070-a937-6077012638c2/test.json",
+                "self": "https://sandbox.zenodo.org/api/deposit/depositions/1054411/files/a5a06ef4-9343-4be9-a609-addfe5f980ec"
+            }
+        }
+    ],
+    "id": "1054411",
+    "links": {
+        "badge": "https://sandbox.zenodo.org/badge/doi/10.5072/zenodo.1054411.svg",
+        "bucket": "https://sandbox.zenodo.org/api/files/4d962396-3207-4070-a937-6077012638c2",
+        "conceptbadge": "https://sandbox.zenodo.org/badge/doi/10.5072/zenodo.1054410.svg",
+        "conceptdoi": "https://doi.org/10.5072/zenodo.1054410",
+        "discard": "https://sandbox.zenodo.org/api/deposit/depositions/1054411/actions/discard",
+        "doi": "https://doi.org/10.5072/zenodo.1054411",
+        "edit": "https://sandbox.zenodo.org/api/deposit/depositions/1054411/actions/edit",
+        "files": "https://sandbox.zenodo.org/api/deposit/depositions/1054411/files",
+        "html": "https://sandbox.zenodo.org/deposit/1054411",
+        "latest": "https://sandbox.zenodo.org/api/records/1056025",
+        "latest_draft": "https://sandbox.zenodo.org/api/deposit/depositions/1056028",
+        "latest_draft_html": "https://sandbox.zenodo.org/deposit/1056028",
+        "latest_html": "https://sandbox.zenodo.org/record/1056025",
+        "newversion": "https://sandbox.zenodo.org/api/deposit/depositions/1054411/actions/newversion",
+        "publish": "https://sandbox.zenodo.org/api/deposit/depositions/1054411/actions/publish",
+        "record": "https://sandbox.zenodo.org/api/records/1054411",
+        "record_html": "https://sandbox.zenodo.org/record/1054411",
+        "registerconceptdoi": "https://sandbox.zenodo.org/api/deposit/depositions/1054411/actions/registerconceptdoi",
+        "self": "https://sandbox.zenodo.org/api/deposit/depositions/1054411"
+    },
+    "metadata": {
+        "upload_type": "other",
+        "publication_date": "2022-04-22",
+        "title": "Placeholder",
+        "creators": [
+            {
+                "name": "Placeholder"
+            }
+        ],
+        "description": "Placeholder",
+        "access_right": "open",
+        "license": "CC-BY-4.0",
+        "doi": "10.5072/zenodo.1054411",
+        "prereserve_doi": {
+            "doi": "10.5072/zenodo.1054411",
+            "recid": "1054411"
+        },
+        "communities": [
+            {
+                "identifier": "zenodo"
+            }
+        ]
+    },
+    "modified": "2022-04-28T15:52:54.577906+00:00",
+    "owner": 122520,
+    "record_id": 1054411,
+    "state": "done",
+    "submitted": true,
+    "title": "Placeholder"
+}
