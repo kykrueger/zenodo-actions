@@ -27,6 +27,6 @@ jobs:
           zenodo_deposition_id: ${{ env.zenodo_deposition_id }}
           zenodo_server: ${{ env.zenodo_server }}
           zenodo_token: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
-      - uses: EndBug/add-and-commit@7.1.1
+      - uses: EndBug/add-and-commit@v7.1.1
         with:
           message: 'published to Zenodo'
