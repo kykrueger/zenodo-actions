@@ -30,7 +30,7 @@ runs:
       shell: bash
       run: |
         python -m pip install --upgrade pip
-        pip install zenodo-rest==0.0.0b5
+        pip install zenodo-rest==0.0.0b7
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Fetch Latest Deposition
       shell: bash
@@ -51,6 +51,13 @@ runs:
           exit
          fi
         zenodo-rest depositions update tmp/.zenodo_deposition.json ${{ inputs.zenodo_metadata }}
+    - name: Remove old attachments 
+      shell: bash
+      env:
+        ZENODO_TOKEN: ${{ inputs.zenodo_token }}
+        ZENODO_URL: ${{ inputs.zenodo_server }}
+      run: |
+        zenodo-rest depositions delete-files tmp/.zenodo_deposition.json
     - name: Upload attachments 
       shell: bash
       env:
